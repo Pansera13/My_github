@@ -1,11 +1,574 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Muito Daora</title>
+    <title>Git e GitHub - Conceitos e Branches</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f8fa;
+            color: #24292e;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #f05033 0%, #4078c0 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        nav {
+            background-color: #24292e;
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0.5rem 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Animação de "bloc bloc" para os botões */
+        nav a:hover {
+            color: #4078c0;
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: bloc-bloc 0.5s ease;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Definindo a animação de pulsação */
+        @keyframes bloc-bloc {
+            0% {
+                transform: scale(1) translateY(0);
+                box-shadow: 0 0 0 rgba(64, 120, 192, 0.4);
+            }
+            50% {
+                transform: scale(1.05) translateY(-3px);
+                box-shadow: 0 4px 10px rgba(64, 120, 192, 0.6);
+            }
+            100% {
+                transform: scale(1) translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+        
+        /* Adicionando um efeito de clique */
+        nav a:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.1s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+        
+        section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: transform 0.3s;
+        }
+        
+        section:hover {
+            transform: translateY(-5px);
+        }
+        
+        h2 {
+            color: #4078c0;
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #f05033;
+            margin: 1.8rem 0 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        h3 i {
+            margin-right: 10px;
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.8rem;
+        }
+        
+        li {
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+        
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1.8rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 4px solid #4078c0;
+        }
+        
+        .branch-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 2.5rem 0;
+            gap: 1.5rem;
+        }
+        
+        .branch {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .branch:hover {
+            transform: translateY(-5px);
+        }
+        
+        .branch-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .branch-icon {
+            font-size: 2rem;
+            margin-right: 12px;
+        }
+        
+        .branch-title {
+            font-weight: bold;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+        
+        .branch-main .branch-header {
+            color: #f05033;
+        }
+        
+        .branch-develop .branch-header {
+            color: #4078c0;
+        }
+        
+        .branch-feature .branch-header {
+            color: #6cc644;
+        }
+        
+        .branch-main {
+            border-top: 5px solid #f05033;
+        }
+        
+        .branch-develop {
+            border-top: 5px solid #4078c0;
+        }
+        
+        .branch-feature {
+            border-top: 5px solid #6cc644;
+        }
+        
+        .command {
+            color: #6cc644;
+        }
+        
+        .branch-command {
+            background-color: #f6f8fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: 'Fira Code', monospace;
+            border-left: 3px solid #4078c0;
+        }
+        
+        .branch-content {
+            flex-grow: 1;
+        }
+        
+        footer {
+            background-color: #24292e;
+            color: white;
+            text-align: center;
+            padding: 2.5rem 2rem;
+            margin-top: 2.5rem;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .branch {
+                flex: 100%;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.3rem 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            /* Ajustando a animação para mobile */
+            nav a:hover {
+                transform: scale(1.05);
+                animation: mobile-bloc 0.4s ease;
+            }
+            
+            @keyframes mobile-bloc {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.08);
+                }
+                100% {
+                    transform: scale(1.05);
+                }
+            }
+        }
+        
+        .highlight {
+            background-color: #fff8e6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #ffd33d;
+            margin: 1.5rem 0;
+        }
+        
+        .diagram {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+        
+        .diagram img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .caption {
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.8rem;
+            color: #666;
+        }
+        
+        /* Adicionando animação de destaque para as seções ao navegar */
+        section:target {
+            animation: highlight 1.5s ease;
+        }
+        
+        @keyframes highlight {
+            0% {
+                background-color: white;
+            }
+            50% {
+                background-color: #e3f2fd;
+            }
+            100% {
+                background-color: white;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <header>
+        <h1>Git e GitHub</h1>
+        <p class="subtitle">Compreendendo os conceitos fundamentais, fluxo de trabalho e estratégia de branches</p>
+    </header>
     
+    <nav>
+        <ul>
+            <li><a href="#conceitos"><i class="fas fa-brain"></i> Conceitos</a></li>
+            <li><a href="#branches"><i class="fas fa-code-branch"></i> Branches</a></li>
+            <li><a href="#fluxo"><i class="fas fa-project-diagram"></i> Fluxo de Trabalho</a></li>
+            <li><a href="#conflitos"><i class="fas fa-exclamation-triangle"></i> Resolução de Conflitos</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="conceitos">
+            <h2><i class="fas fa-brain"></i> Conceitos Básicos</h2>
+            
+            <h3><i class="fas fa-question-circle"></i> O que é Git?</h3>
+            <p>Git é um sistema de controle de versão distribuído que permite rastrear alterações no código-fonte durante o desenvolvimento de software. Foi criado por Linus Torvalds em 2005 para o desenvolvimento do kernel Linux.</p>
+            
+            <h3><i class="fab fa-github"></i> O que é GitHub?</h3>
+            <p>GitHub é uma plataforma de hospedagem de código-fonte baseada em Git. Ele adiciona recursos próprios ao Git, incluindo interface web, controle de acesso, ferramentas de colaboração, e muito mais.</p>
+            
+            <div class="highlight">
+                <h3><i class="fas fa-lightbulb"></i> Principais vantagens:</h3>
+                <ul>
+                    <li>Controle de histórico de alterações</li>
+                    <li>Trabalho em equipe facilitado</li>
+                    <li>Ramificação (branching) e fusão (merging) eficientes</li>
+                    <li>Rastreamento of issues e solicitações de pull</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="branches">
+            <h2><i class="fas fa-code-branch"></i> Estratégia de Três Branches</h2>
+            
+            <p>Uma estratégia comum de branches envolve três ramificações principais. Esta abordagem permite um desenvolvimento organizado, com código estável na branch principal e isolamento de novas funcionalidades.</p>
+            
+            <div class="branch-container">
+                <div class="branch branch-main">
+                    <div class="branch-header">
+                        <i class="fas fa-star branch-icon"></i>
+                        <div class="branch-title">Main/Master</div>
+                    </div>
+                    <div class="branch-content">
+                        <p>Branch principal que contém o código de produção. Deve estar sempre estável e pronto para implantação.</p>
+                        <p><strong>Como criar:</strong></p>
+                        <div class="branch-command">
+                            <span class="command"># A branch main é criada por padrão ao inicializar um repositório</span><br>
+                            git init<br>
+                            git add .<br>
+                            git commit -m "Initial commit"<br>
+                            <br>
+                            <span class="command"># Ou ao clonar um repositório existente</span><br>
+                            git clone https://github.com/usuario/repositorio.git
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="branch branch-develop">
+                    <div class="branch-header">
+                        <i class="fas fa-code branch-icon"></i>
+                        <div class="branch-title">Develop</div>
+                    </div>
+                    <div class="branch-content">
+                        <p>Branch de desenvolvimento onde as funcionalidades são integradas antes de irem para produção.</p>
+                        <p><strong>Como criar:</strong></p>
+                        <div class="branch-command">
+                            <span class="command"># Criar a branch develop a partir da main</span><br>
+                            git checkout main<br>
+                            git pull origin main<br>
+                            git checkout -b develop<br>
+                            <br>
+                            <span class="command"># Enviar para o repositório remoto</span><br>
+                            git push -u origin develop
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="branch branch-feature">
+                    <div class="branch-header">
+                        <i class="fas fa-puzzle-piece branch-icon"></i>
+                        <div class="branch-title">Feature</div>
+                    </div>
+                    <div class="branch-content">
+                        <p>Branches temporárias criadas a partir de develop para desenvolver novas funcionalidades específicas.</p>
+                        <p><strong>Como criar:</strong></p>
+                        <div class="branch-command">
+                            <span class="command"># Criar uma branch de funcionalidade</span><br>
+                            git checkout develop<br>
+                            git pull origin develop<br>
+                            git checkout -b feature/nome-da-funcionalidade<br>
+                            <br>
+                            <span class="command"># Desenvolver a funcionalidade e fazer commits</span><br>
+                            git add .<br>
+                            git commit -m "Implementa nova funcionalidade"<br>
+                            <br>
+                            <span class="command"># Enviar para o repositório remoto</span><br>
+                            git push -u origin feature/nome-da-funcionalidade
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <h3><i class="fas fa-sitemap"></i> Fluxo entre branches:</h3>
+                <ol>
+                    <li>Novas funcionalidades são desenvolvidas em branches de feature</li>
+                    <li>Quando prontas, são mescladas na branch develop</li>
+                    <li>Após testes e estabilização, develop é mesclada em main para produção</li>
+                    <li>Correções de bugs críticos podem ser feitas através de hotfix branches</li>
+                </ol>
+            </div>
+        </section>
+        
+        <section id="fluxo">
+            <h2><i class="fas fa-project-diagram"></i> Fluxo de Trabalho no Git/GitHub</h2>
+            
+            <p>Um fluxo de trabalho comum no Git/GitHub usando a estratégia de três branches envolve os seguintes passos:</p>
+            
+            <ol>
+                <li><strong>Clonar o repositório</strong>: Copiar um repositório remoto para sua máquina local</li>
+                <li><strong>Sincronizar com a branch develop</strong>: Manter-se atualizado com as mudanças da equipe</li>
+                <li><strong>Criar uma branch de feature</strong>: Isolar suas alterações para uma nova funcionalidade</li>
+                <li><strong>Fazer commits regularmente</strong>: Salvar alterações no histórico da branch</li>
+                <li><strong>Fazer push</strong>: Enviar commits para o repositório remoto</li>
+                <li><strong>Abrir um Pull Request</strong>: Solicitar a integração das alterações na develop</li>
+                <li><strong>Revisão e merge</strong>: Revisar o código e integrar à branch develop</li>
+                <li><strong>Mesclar develop em main</strong>: Após testes, levar as alterações para produção</li>
+            </ol>
+            
+            <div class="code-block">
+                <span class="command"># Fluxo básico de trabalho com branches</span><br>
+                git clone https://github.com/usuario/repositorio.git<br>
+                cd repositorio<br>
+                <br>
+                <span class="command"># Sincronizar com a develop</span><br>
+                git checkout develop<br>
+                git pull origin develop<br>
+                <br>
+                <span class="command"># Criar branch de funcionalidade</span><br>
+                git checkout -b feature/nova-funcionalidade<br>
+                <br>
+                <span class="command"># Desenvolver e fazer commits</span><br>
+                git add .<br>
+                git commit -m "Implementa nova funcionalidade"<br>
+                <br>
+                <span class="command"># Enviar para o repositório remoto</span><br>
+                git push -u origin feature/nova-funcionalidade<br>
+                <br>
+                <span class="command"># Após aprovação, mesclar com develop</span><br>
+                git checkout develop<br>
+                git merge feature/nova-funcionalidade<br>
+                git push origin develop
+            </div>
+            
+            <div class="diagram">
+                <img src="https://miro.medium.com/v2/resize:fit:1400/1*8s3qD2QOQzN2sLkXzLcNow.png" alt="Diagrama de fluxo do Git com três branches" onerror="this.style.display='none'">
+                <p class="caption">Diagrama ilustrando o fluxo entre as branches main, develop e feature</p>
+            </div>
+        </section>
+        
+        <section id="conflitos">
+            <h2><i class="fas fa-exclamation-triangle"></i> Resolução de Conflitos</h2>
+            
+            <p>Conflitos ocorrem quando o Git não pode mesclar automaticamente alterações diferentes no mesmo arquivo. Eles devem ser resolvidos manualmente.</p>
+            
+            <h3><i class="fas fa-handshake"></i> Como resolver conflitos:</h3>
+            
+            <ol>
+                <li>Identifique os arquivos com conflitos (git status)</li>
+                <li>Abra cada arquivo e localize os marcadores de conflito</li>
+                <li>Decida qual código manter (ou combine as alterações)</li>
+                <li>Remova os marcadores de conflito</li>
+                <li>Adicione os arquivos resolvidos (git add)</li>
+                <li>Complete o merge (git commit)</li>
+            </ol>
+            
+            <div class="code-block">
+                <span class="command"># Durante um merge com conflitos</span><br>
+                Auto-merging arquivo.txt<br>
+                CONFLICT (content): Merge conflict in arquivo.txt<br>
+                Automatic merge failed; fix conflicts and then commit the result.<br>
+                <br>
+                <span class="command"># Verificar arquivos com conflitos</span><br>
+                git status<br>
+                <br>
+                <span class="command"># Após resolver os conflitos manualmente</span><br>
+                git add arquivo.txt<br>
+                git commit -m "Resolvendo conflitos de merge"
+            </div>
+            
+            <div class="highlight">
+                <h3><i class="fas fa-shield-alt"></i> Prevenindo conflitos:</h3>
+                <ul>
+                    <li>Comunique-se com sua equipe sobre alterações em andamento</li>
+                    <li>Faça commits pequenos e frequentes</li>
+                    <li>Atualize sua branch regularmente com as alterações da branch principal</li>
+                    <li>Use ferramentas de diff/merge para visualizar alterações</li>
+                    <li>Resolva conflitos assim que surgirem, não os deixe acumular</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p>Página educativa sobre Git e GitHub - Desenvolvido para fins didáticos</p>
+            <p>Conceitos de versionamento, estratégia de branches e resolução de conflitos</p>
+        </div>
+    </footer>
 </body>
 </html>
