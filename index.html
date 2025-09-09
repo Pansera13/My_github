@@ -1,806 +1,200 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git e GitHub - Conceitos e Práticas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #362ea4;
-            --primary-dark: #228b3d;
-            --secondary: #f6f8fa;
-            --dark: #24292e;
-            --darker: #1a1f24;
-            --light: #fafbfc;
-            --border: #e1e4e8;
-            --accent: #0366d6;
-            --accent-light: #2188ff;
-            --danger: #cf222e;
-            --warning: #d15704;
-            --code-bg: #1f2428;
-            --gradient-start: #2ea44f;
-            --gradient-end: #1e7e34;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        header {
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            color: white;
-            padding: 1.5rem 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.8rem;
-            color: white;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            font-size: 2rem;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 1.8rem;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
-        
-        .nav-links a:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-        
-        .hero {
-            text-align: center;
-            padding: 3rem 2rem;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(246,248,250,0.9) 100%);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-        }
-        
-        .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            color: var(--darker);
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            color: var(--dark);
-        }
-        
-        section {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            transition: transform 0.3s;
-            position: relative;
-        }
-        
-        section:hover {
-            transform: translateY(-5px);
-        }
-        
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border);
-        }
-        
-        h2 i {
-            margin-right: 12px;
-            color: var(--primary);
-        }
-        
-        h3 {
-            font-size: 1.5rem;
-            margin: 1.5rem 0 1rem;
-            color: var(--primary);
-        }
-        
-        p {
-            margin-bottom: 1.2rem;
-            font-size: 1.05rem;
-        }
-        
-        ul, ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        li {
-            margin-bottom: 0.7rem;
-        }
-        
-        .branch-selector {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .branch-btn {
-            padding: 0.8rem 1.5rem;
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        
-        .branch-btn i {
-            margin-right: 8px;
-        }
-        
-        .branch-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-        }
-        
-        .branch-btn.active {
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .branch-content {
-            display: none;
-            padding: 2rem;
-            background-color: var(--light);
-            border-radius: 10px;
-            border-left: 5px solid var(--primary);
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .branch-content.active {
-            display: block;
-        }
-        
-        .command-box {
-            background-color: var(--code-bg);
-            color: #f0f6fc;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            font-family: 'Fira Code', monospace;
-            overflow-x: auto;
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .command-box::before {
-            content: "$";
-            position: absolute;
-            left: 10px;
-            color: var(--accent-light);
-        }
-        
-        .command-box code {
-            margin-left: 15px;
-            display: block;
-        }
-        
-        .btn {
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(46, 164, 79, 0.3);
-            margin-right: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(46, 164, 79, 0.4);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(46, 164, 79, 0.3);
-        }
-        
-        .flow-diagram {
-            display: flex;
-            justify-content: center;
-            margin: 2.5rem 0;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-        }
-        
-        .flow-step {
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 1.5rem 1rem;
-            min-width: 170px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .flow-step:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-        
-        .flow-step i {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        
-        .flow-step:not(:last-child)::after {
-            content: "→";
-            position: absolute;
-            right: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary);
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .conflict-example {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 2rem 0;
-            background-color: var(--light);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-        
-        .simulation-box {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
-            border-radius: 10px;
-            border-left: 5px solid var(--accent);
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .simulation-step {
-            margin-bottom: 1rem;
-            padding-left: 1.5rem;
-            position: relative;
-            animation: fadeIn 0.5s ease forwards;
-            opacity: 0;
-        }
-        
-        .simulation-step::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-            font-weight: bold;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 3rem;
-            margin-top: 3rem;
-            background: linear-gradient(to right, var(--darker), #2b3137);
-            color: white;
-            border-top: 5px solid var(--primary);
-        }
-        
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .footer-icons a {
-            color: white;
-            font-size: 1.5rem;
-            transition: all 0.3s;
-        }
-        
-        .footer-icons a:hover {
-            color: var(--primary);
-            transform: translateY(-3px);
-        }
-        
-        @media (max-width: 768px) {
-            .flow-step:not(:last-child)::after {
-                content: "↓";
-                right: 50%;
-                top: auto;
-                bottom: -25px;
-                transform: translateX(50%);
-            }
-            
-            .flow-diagram {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-        }
-        
-        .floating-icon {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 6px 15px rgba(46, 164, 79, 0.4);
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 99;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .floating-icon:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 8px 20px rgba(46, 164, 79, 0.5);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprenda Git e GitHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #1e293b;
+      --light: #ffffff;
+      --border: #e5e7eb;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9fafb;
+      color: var(--secondary);
+    }
+
+    header {
+      background: var(--primary);
+      color: var(--light);
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    header p {
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    section h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    ul {
+      padding-left: 1.2rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--secondary);
+      color: var(--light);
+    }
+
+    /* FAQ Section */
+    .faq-item {
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: var(--light);
+      border: none;
+      text-align: left;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .faq-question i {
+      margin-right: 10px;
+      transition: transform 0.3s;
+    }
+
+    .faq-question.active i {
+      transform: rotate(90deg);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 1rem;
+      background: #f9fafb;
+      border-top: 1px solid var(--border);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <i class="fab fa-git-alt"></i>
-                <span>Git & GitHub</span>
-            </div>
-            <div class="nav-links">
-                <a href="#conceitos"><i class="fas fa-book"></i> Conceitos</a>
-                <a href="#fluxo"><i class="fas fa-project-diagram"></i> Fluxo</a>
-                <a href="#conflitos"><i class="fas fa-exclamation-triangle"></i> Conflitos</a>
-                <a href="#branches"><i class="fas fa-code-branch"></i> Branches</a>
-            </div>
-        </nav>
-    </header>
-    
-    <main>
-        <div class="hero">
-            <h1>Domine o Git e GitHub</h1>
-            <p>Aprenda os conceitos essenciais, fluxo de trabalho, resolução de conflitos e o uso eficiente de branches para melhorar seu desenvolvimento de software.</p>
-            <button class="btn" onclick="scrollToSection('conceitos')">
-                <i class="fas fa-arrow-down"></i> Começar a aprender
-            </button>
-        </div>
-        
-        <section id="conceitos">
-            <h2><i class="fas fa-book"></i> Conceitos Básicos do Git e GitHub</h2>
-            <p>Git é um sistema de controle de versão distribuído que permite acompanhar mudanças no código-fonte durante o desenvolvimento de software.</p>
-            <p>GitHub é uma plataforma de hospedagem de código-fonte que utiliza o Git para controle de versões, com recursos adicionais de colaboração.</p>
-            
-            <h3><i class="fas fa-star"></i> Principais Conceitos:</h3>
-            <ul>
-                <li><strong>Repositório</strong>: Local onde são armazenados todos os arquivos e histórico de um projeto</li>
-                <li><strong>Commit</strong>: Snapshot das alterações feitas no repositório em um determinado momento</li>
-                <li><strong>Branch</strong>: Ramificação do código que permite desenvolver funcionalidades isoladamente</li>
-                <li><strong>Merge</strong>: Ação de unir o código de diferentes branches</li>
-                <li><strong>Pull Request</strong>: Solicitação para incorporar alterações de uma branch em outra</li>
-            </ul>
-            
-            <div class="command-box">
-                <code># Inicializar um repositório Git</code>
-                <code>git init</code>
-                <code> </code>
-                <code># Clonar um repositório existente</code>
-                <code>git clone &lt;url-do-repositório&gt;</code>
-                <code> </code>
-                <code># Verificar o status dos arquivos</code>
-                <code>git status</code>
-            </div>
-        </section>
-        
-        <section id="fluxo">
-            <h2><i class="fas fa-project-diagram"></i> Fluxo de Trabalho no Git/GitHub</h2>
-            <p>Um fluxo de trabalho comum no Git envolve as seguintes etapas:</p>
-            
-            <div class="flow-diagram">
-                <div class="flow-step">
-                    <i class="fas fa-edit"></i>
-                    <div>Fazer alterações nos arquivos</div>
-                </div>
-                <div class="flow-step">
-                    <i class="fas fa-plus-square"></i>
-                    <div>Adicionar alterações (git add)</div>
-                </div>
-                <div class="flow-step">
-                    <i class="fas fa-check-circle"></i>
-                    <div>Fazer commit (git commit)</div>
-                </div>
-                <div class="flow-step">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <div>Enviar para remoto (git push)</div>
-                </div>
-            </div>
-            
-            <h3><i class="fas fa-terminal"></i> Comandos do Fluxo Básico:</h3>
-            <div class="command-box">
-                <code># Adicionar arquivos específicos ao staging</code>
-                <code>git add arquivo1.txt arquivo2.js</code>
-                <code> </code>
-                <code># Adicionar todos os arquivos modificados</code>
-                <code>git add .</code>
-                <code> </code>
-                <code># Fazer commit com mensagem</code>
-                <code>git commit -m "Mensagem descritiva do commit"</code>
-                <code> </code>
-                <code># Enviar commits para o repositório remoto</code>
-                <code>git push origin main</code>
-            </div>
-            
-            <button class="btn" onclick="simularFluxo()">
-                <i class="fas fa-play"></i> Simular Fluxo de Trabalho
-            </button>
-            <div id="fluxo-simulacao" class="simulation-box">
-                <p>Simulação do fluxo Git em andamento...</p>
-            </div>
-        </section>
-        
-        <section id="conflitos">
-            <h2><i class="fas fa-exclamation-triangle"></i> Como Resolver Conflitos no Git</h2>
-            <p>Conflitos ocorrem quando o Git não pode mesclar automaticamente as alterações de diferentes branches ou commits.</p>
-            
-            <h3><i class="fas fa-list-ol"></i> Etapas para Resolver Conflitos:</h3>
-            <ol>
-                <li>Identificar os arquivos com conflitos (git status)</li>
-                <li>Abrir cada arquivo e localizar as marcações de conflito</li>
-                <li>Decidir qual código manter (ou combinar as alterações)</li>
-                <li>Remover as marcações de conflito do Git</li>
-                <li>Adicionar os arquivos resolvidos ao staging (git add)</li>
-                <li>Completar o merge (git commit)</li>
-            </ol>
-            
-            <div class="conflict-example">
-                <h4><i class="fas fa-file-code"></i> Exemplo de arquivo com conflito:</h4>
-                <div class="command-box">
-                    <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>
-                    <code>console.log("Versão local");</code>
-                    <code>=======</code>
-                    <code>console.log("Versão remota");</code>
-                    <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-remota</code>
-                </div>
-                
-                <h4><i class="fas fa-check-circle"></i> Como ficaria após a resolução:</h4>
-                <div class="command-box">
-                    <code>console.log("Versão combinada");</code>
-                </div>
-            </div>
-            
-            <button class="btn" onclick="simularConflito()">
-                <i class="fas fa-play"></i> Simular Resolução de Conflito
-            </button>
-            <div id="conflito-simulacao" class="simulation-box">
-                <p>Simulação de resolução de conflito em andamento...</p>
-            </div>
-        </section>
-        
-        <section id="branches">
-            <h2><i class="fas fa-code-branch"></i> Trabalhando com Branches</h2>
-            <p>Branches permitem desenvolver funcionalidades, corrigir bugs ou experimentar ideias sem afetar a codebase principal.</p>
-            
-            <div class="branch-selector">
-                <button class="branch-btn active" onclick="mostrarBranch('main')">
-                    <i class="fas fa-layer-group"></i> Main
-                </button>
-                <button class="branch-btn" onclick="mostrarBranch('develop')">
-                    <i class="fas fa-tasks"></i> Develop
-                </button>
-                <button class="branch-btn" onclick="mostrarBranch('feature')">
-                    <i class="fas fa-plus"></i> Feature
-                </button>
-            </div>
-            
-            <div id="branch-main" class="branch-content active">
-                <h3><i class="fas fa-layer-group"></i> Branch Main/Master</h3>
-                <p>A branch principal que contém o código de produção. Deve sempre estar estável e pronta para deploy.</p>
-                
-                <div class="command-box">
-                    <code># Criar uma nova branch a partir da main</code>
-                    <code>git checkout -b nova-feature main</code>
-                    <code> </code>
-                    <code># Atualizar a branch main com as últimas alterações</code>
-                    <code>git checkout main</code>
-                    <code>git pull origin main</code>
-                </div>
-                
-                <button class="btn" onclick="criarBranch()">
-                    <i class="fas fa-plus"></i> Criar Branch a partir da Main
-                </button>
-            </div>
-            
-            <div id="branch-develop" class="branch-content">
-                <h3><i class="fas fa-tasks"></i> Branch Develop</h3>
-                <p>Branch de desenvolvimento onde as funcionalidades são integradas antes de irem para produção.</p>
-                
-                <div class="command-box">
-                    <code># Mudar para a branch develop</code>
-                    <code>git checkout develop</code>
-                    <code> </code>
-                    <code># Integrar uma feature na develop</code>
-                    <code>git checkout develop</code>
-                    <code>git merge feature-nova</code>
-                </div>
-                
-                <button class="btn" onclick="integrarFeature()">
-                    <i class="fas fa-code-merge"></i> Integrar Feature na Develop
-                </button>
-            </div>
-            
-            <div id="branch-feature" class="branch-content">
-                <h3><i class="fas fa-plus"></i> Branch Feature</h3>
-                <p>Branches temporárias para desenvolver novas funcionalidades. São criadas a partir da develop e depois mescladas de volta.</p>
-                
-                <div class="command-box">
-                    <code># Criar uma branch de feature</code>
-                    <code>git checkout -b minha-feature develop</code>
-                    <code> </code>
-                    <code># Trabalhar na feature e fazer commits</code>
-                    <code>git add .</code>
-                    <code>git commit -m "Desenvolvendo nova funcionalidade"</code>
-                    <code> </code>
-                    <code># Finalizar a feature e mesclar à develop</code>
-                    <code>git checkout develop</code>
-                    <code>git merge --no-ff minha-feature</code>
-                    <code>git branch -d minha-feature</code>
-                </div>
-                
-                <button class="btn" onclick="desenvolverFeature()">
-                    <i class="fas fa-cogs"></i> Desenvolver Nova Feature
-                </button>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <p>Página demonstrativa sobre Git e GitHub - Desenvolvido para fins educacionais</p>
-        <p>Utilize estes conceitos para melhorar seu fluxo de trabalho no desenvolvimento de software</p>
-        <div class="footer-icons">
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-gitlab"></i></a>
-            <a href="#"><i class="fab fa-bitbucket"></i></a>
-            <a href="#"><i class="fas fa-code"></i></a>
-        </div>
-    </footer>
+  <header>
+    <h1><i class="fas fa-code-branch"></i> Aprenda Git e GitHub</h1>
+    <p>Domine o versionamento de código e a colaboração em projetos</p>
+  </header>
 
-    <div class="floating-icon" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </div>
+  <main>
+    <section>
+      <h2><i class="fas fa-terminal"></i> O que é Git?</h2>
+      <p>Git é um sistema de controle de versão distribuído que permite rastrear mudanças no código e colaborar com outras pessoas.</p>
+    </section>
 
-    <script>
-        // Função para mostrar o conteúdo da branch selecionada
-        function mostrarBranch(branchName) {
-            // Esconder todos os conteúdos de branch
-            document.querySelectorAll('.branch-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remover a classe active de todos os botões
-            document.querySelectorAll('.branch-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Mostrar o conteúdo da branch selecionada e ativar o botão correspondente
-            document.getElementById(`branch-${branchName}`).classList.add('active');
-            event.target.classList.add('active');
-        }
-        
-        // Função para rolar suavemente até uma seção
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ 
-                behavior: 'smooth' 
-            });
-        }
-        
-        // Função para rolar até o topo
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        // Funções de simulação
-        function simularFluxo() {
-            const simulacao = document.getElementById('fluxo-simulacao');
-            simulacao.style.display = 'block';
-            simulacao.innerHTML = '<p>Simulando fluxo Git...</p>';
-            
-            const steps = [
-                '✓ Alterações feitas nos arquivos',
-                '✓ Arquivos adicionados ao staging (git add)',
-                '✓ Commit realizado (git commit)',
-                '✓ Alterações enviadas para o repositório remoto (git push)',
-                '<strong>Fluxo concluído com sucesso!</strong>'
-            ];
-            
-            steps.forEach((step, index) => {
-                setTimeout(() => {
-                    const stepElement = document.createElement('div');
-                    stepElement.className = 'simulation-step';
-                    stepElement.innerHTML = step;
-                    stepElement.style.animationDelay = `${index * 0.2}s`;
-                    simulacao.appendChild(stepElement);
-                }, index * 1000);
-            });
-        }
-        
-        function simularConflito() {
-            const simulacao = document.getElementById('conflito-simulacao');
-            simulacao.style.display = 'block';
-            simulacao.innerHTML = '<p>Simulando resolução de conflito...</p>';
-            
-            const steps = [
-                '✓ Arquivos com conflito identificados',
-                '✓ Conteúdo do conflito analisado',
-                '✓ Alterações combinadas manualmente',
-                '✓ Marcações de conflito removidas',
-                '✓ Arquivos marcados como resolvidos (git add)',
-                '✓ Merge finalizado (git commit)',
-                '<strong>Conflito resolvido com sucesso!</strong>'
-            ];
-            
-            steps.forEach((step, index) => {
-                setTimeout(() => {
-                    const stepElement = document.createElement('div');
-                    stepElement.className = 'simulation-step';
-                    stepElement.innerHTML = step;
-                    stepElement.style.animationDelay = `${index * 0.2}s`;
-                    simulacao.appendChild(stepElement);
-                }, index * 1000);
-            });
-        }
-        
-        function criarBranch() {
-            alert('Branch criada a partir da main com sucesso!');
-        }
-        
-        function integrarFeature() {
-            alert('Feature integrada na branch develop!');
-        }
-        
-        function desenvolverFeature() {
-            alert('Iniciando desenvolvimento de nova feature...');
-        }
-        
-        // Mostrar/ocultar botão flutuante baseado na rolagem
-        window.onscroll = function() {
-            const floatingBtn = document.querySelector('.floating-icon');
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                floatingBtn.style.display = 'flex';
-            } else {
-                floatingBtn.style.display = 'none';
-            }
-        };
-    </script>
+    <section>
+      <h2><i class="fab fa-github"></i> O que é GitHub?</h2>
+      <p>O GitHub é uma plataforma que hospeda repositórios Git na nuvem e facilita a colaboração entre desenvolvedores.</p>
+    </section>
+
+    <section>
+      <h2><i class="fas fa-lightbulb"></i> Principais Comandos</h2>
+      <ul>
+        <li><b>git init</b> – Inicia um repositório Git.</li>
+        <li><b>git add .</b> – Adiciona arquivos para serem versionados.</li>
+        <li><b>git commit -m "mensagem"</b> – Salva as alterações.</li>
+        <li><b>git push</b> – Envia as alterações para o GitHub.</li>
+        <li><b>git pull</b> – Atualiza o repositório local com mudanças do GitHub.</li>
+      </ul>
+    </section>
+
+    <!-- FAQ Interativo -->
+    <section id="faq">
+      <h2><i class="fas fa-question-circle"></i> Perguntas Frequentes</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          <i class="fas fa-angle-right"></i> O que é Git?
+        </button>
+        <div class="faq-answer">
+          <p>Git é um sistema de controle de versão distribuído que permite acompanhar mudanças no código e colaborar em projetos.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          <i class="fas fa-angle-right"></i> Qual a diferença entre Git e GitHub?
+        </button>
+        <div class="faq-answer">
+          <p>O Git é a ferramenta de versionamento, enquanto o GitHub é uma plataforma online que hospeda repositórios Git e facilita a colaboração.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          <i class="fas fa-angle-right"></i> O que é um Pull Request?
+        </button>
+        <div class="faq-answer">
+          <p>É uma solicitação para mesclar código de uma branch em outra, geralmente usada para revisão antes de integrar alterações.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Feito com ❤️ para estudantes e desenvolvedores</p>
+  </footer>
+
+  <script>
+    function toggleFAQ(button) {
+      const answer = button.nextElementSibling;
+      button.classList.toggle("active");
+      if (answer.style.display === "block") {
+        answer.style.display = "none";
+      } else {
+        answer.style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
